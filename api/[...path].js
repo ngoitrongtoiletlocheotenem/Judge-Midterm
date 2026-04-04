@@ -13,11 +13,14 @@ const HOP_BY_HOP_HEADERS = new Set([
 ]);
 
 function buildTargetUrl(req, backendBaseUrl) {
-  const segments = Array.isArray(req.query.path)
-    ? req.query.path
-    : req.query.path
-      ? [req.query.path]
-      : [];
+  const requestUrl = new URL(req.url, 'http://localhost');
+  const pathnameSegments = requestUrl.pathname.split('/').filter(Boolean);
+
+  const apiIndex = pathnameSegments[0] === 'api' ? 1 : 0;
+  const segments = pathnameSegments.slice(apiIndex);
+  if (segments[0] === 'api') {
+    segments.shift();
+  }
 
   const path = segments.join('/');
   const target = new URL(`/api/${path}`, backendBaseUrl);
