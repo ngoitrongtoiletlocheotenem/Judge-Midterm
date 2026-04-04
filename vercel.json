@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "functions": {
+    "api/[...path].js": {
+      "runtime": "nodejs20.x",
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/[...path].js"
+    },
+    {
+      "src": "/css/(.*)",
+      "dest": "/src/main/resources/static/css/$1"
+    },
+    {
+      "src": "/problem.html",
+      "dest": "/src/main/resources/static/problem.html"
+    },
+    {
+      "src": "/",
+      "dest": "/src/main/resources/static/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/src/main/resources/static/$1"
+    }
+  ]
+}
