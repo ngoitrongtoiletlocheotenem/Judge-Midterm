@@ -1,5 +1,7 @@
 package com.onlinejudge.service;
 
+import com.onlinejudge.dto.AdminImportRequest;
+import com.onlinejudge.dto.AdminImportResponse;
 import com.onlinejudge.dto.ProblemResponse;
 import com.onlinejudge.model.Problem;
 import com.onlinejudge.model.TestCase;
@@ -7,6 +9,7 @@ import com.onlinejudge.repository.ProblemRepository;
 import com.onlinejudge.repository.TestCaseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,5 +46,45 @@ public class ProblemService {
                 .orElseThrow(() -> new IllegalArgumentException("Problem not found: " + problemId));
         testCase.setProblemId(problemId);
         return testCaseRepository.save(testCase);
+    }
+
+    @Transactional
+    public AdminImportResponse importProblems(AdminImportRequest request) {
+        if (request.isClearExisting()) {
+            testCaseRepository.deleteAllInBatch();
+            problemRepository.deleteAllInBatch();
+        }
+
+        int problemCount = 0;
+        int testCaseCount = 0;
+
+        for (AdminImportRequest.ProblemImportItem item : request.getProblems()) {
+            Problem savedProblem = problemRepository.save(Problem.builder()
+                    .title(item.getTitle())
+                    .description(item.getDescription())
+                    .difficulty(item.getDifficulty())
+                    .timeLimit(item.getTimeLimit())
+                    .memoryLimit(item.getMemoryLimit())
+                    .build());
+
+            problemCount++;
+
+            for (AdminImportRequest.TestCaseImportItem testCaseItem : item.getTestCases()) {
+                testCaseRepository.save(TestCase.builder()
+                        .problemId(savedProblem.getId())
+                        .input(testCaseItem.getInput())
+                        .expectedOutput(testCaseItem.getExpectedOutput())
+                        .isHidden(testCaseItem.getIsHidden())
+                        .orderIndex(testCaseItem.getOrderIndex())
+                        .build());
+                testCaseCount++;
+            }
+        }
+
+        return AdminImportResponse.builder()
+                .problemsImported(problemCount)
+                .testCasesImported(testCaseCount)
+                .clearedExisting(request.isClearExisting())
+                .build();
     }
 }

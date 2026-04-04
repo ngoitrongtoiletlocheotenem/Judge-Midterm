@@ -205,6 +205,50 @@ That gives you this flow:
 
 Browser → Vercel frontend → Vercel `/api/*` proxy → Render Spring Boot backend
 
+### Admin Import Endpoint
+
+You can upload a whole problem set with one request:
+
+```http
+POST /api/admin/import
+Content-Type: application/json
+```
+
+Example body:
+
+```json
+{
+  "clearExisting": true,
+  "problems": [
+    {
+      "title": "Add Two Numbers",
+      "description": "## Problem Statement\nReturn the sum of two integers.",
+      "difficulty": "EASY",
+      "timeLimit": 1000,
+      "memoryLimit": 128000,
+      "testCases": [
+        {
+          "input": "3 5",
+          "expectedOutput": "8",
+          "isHidden": false,
+          "orderIndex": 0
+        }
+      ]
+    }
+  ]
+}
+```
+
+Response:
+
+```json
+{
+  "problemsImported": 1,
+  "testCasesImported": 1,
+  "clearedExisting": true
+}
+```
+
 ---
 
 ## ⚙️ Configuration
