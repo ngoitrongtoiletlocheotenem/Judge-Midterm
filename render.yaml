@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: online-judge-backend
+    env: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    healthCheckPath: /api/problems

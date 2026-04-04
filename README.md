@@ -162,6 +162,49 @@ After deployment:
 
 ---
 
+## 🚂 Deploy the Backend on Render
+
+Render should host only the Spring Boot API for this project.
+
+### Recommended: Docker Web Service
+Use a **Docker Web Service** on Render so the backend has the compilers it needs to run submissions in `executor.mode=local`.
+
+This repository includes a [`render.yaml`](render.yaml) blueprint and a [`Dockerfile`](Dockerfile) for that setup.
+
+### If you prefer a Java Web Service
+You can also configure a Java service manually with:
+
+**Build Command**
+```bash
+mvn clean package -DskipTests
+```
+
+**Start Command**
+```bash
+java -jar target/online-judge-1.0.0.jar
+```
+
+### Port Handling
+Render provides the `PORT` variable automatically. The app is configured to use it via:
+
+```yaml
+server:
+  port: ${PORT:8081}
+```
+
+### Vercel Connection
+After Render deploys, copy your backend URL and set it in Vercel:
+
+```text
+BACKEND_URL=https://your-render-service.onrender.com
+```
+
+That gives you this flow:
+
+Browser → Vercel frontend → Vercel `/api/*` proxy → Render Spring Boot backend
+
+---
+
 ## ⚙️ Configuration
 
 The main configuration file is `src/main/resources/application.yml`.
