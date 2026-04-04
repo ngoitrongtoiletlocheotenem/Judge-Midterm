@@ -74,7 +74,7 @@ async function handler(req, res) {
     return;
   }
 
-  const backendBaseUrl = process.env.BACKEND_URL;
+  const backendBaseUrl = process.env.BACKEND_URL || 'https://online-judge-backend-mrca.onrender.com';
   if (!backendBaseUrl) {
     res.status(500).json({
       error: 'BACKEND_URL is not configured',
