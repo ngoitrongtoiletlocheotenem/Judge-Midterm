@@ -79,6 +79,7 @@
     
     <script>
         const API_BASE = '';
+        const SUBMISSION_API_BASE = 'https://online-judge-backend-mrca.onrender.com';
         let editor = null;
         let currentProblem = null;
 
@@ -280,7 +281,7 @@ int main() {
                 '<div class="skeleton" style="height: 60px; margin-bottom: 0.5rem;"></div>'.repeat(3);
 
             try {
-                const response = await fetch(`${API_BASE}/api/submissions`, {
+                const response = await fetch(`${SUBMISSION_API_BASE}/api/submissions`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
