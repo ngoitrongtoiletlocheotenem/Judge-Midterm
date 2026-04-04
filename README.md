@@ -171,6 +171,8 @@ Use a **Docker Web Service** on Render so the backend has the compilers it needs
 
 This repository includes a [`render.yaml`](render.yaml) blueprint and a [`Dockerfile`](Dockerfile) for that setup.
 
+The blueprint uses Render's free web service plan, so you should not be forced onto the paid Starter tier.
+
 ### If you prefer a Java Web Service
 You can also configure a Java service manually with:
 
