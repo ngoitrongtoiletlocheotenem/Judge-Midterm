@@ -166,12 +166,21 @@ After deployment:
 
 Render should host only the Spring Boot API for this project.
 
+### ✅ Persistent Database (Recommended)
+To make problems survive restarts/redeploys, use the included Render blueprint with **both**:
+- a Docker Web Service (`online-judge-backend`)
+- a free PostgreSQL database (`online-judge-db`)
+
+The blueprint wires database credentials automatically and enables the `render` Spring profile.
+
 ### Recommended: Docker Web Service
 Use a **Docker Web Service** on Render so the backend has the compilers it needs to run submissions in `executor.mode=local`.
 
 This repository includes a [`render.yaml`](render.yaml) blueprint and a [`Dockerfile`](Dockerfile) for that setup.
 
 The blueprint uses Render's free web service plan, so you should not be forced onto the paid Starter tier.
+
+It also includes a free PostgreSQL instance so imported problems are stored persistently.
 
 ### If you prefer a Java Web Service
 You can also configure a Java service manually with:
@@ -254,6 +263,21 @@ Response:
 ## ⚙️ Configuration
 
 The main configuration file is `src/main/resources/application.yml`.
+
+For Render production, this repo also includes `src/main/resources/application-render.yml`.
+
+### Database Profiles
+
+- `application.yml` (default/local): H2 in-memory database
+- `application-render.yml` (Render): PostgreSQL with durable storage
+
+On Render, the profile is enabled via:
+
+```yaml
+SPRING_PROFILES_ACTIVE=render
+```
+
+This is already set in [`render.yaml`](render.yaml).
 
 ### Changing the Execution Mode
 

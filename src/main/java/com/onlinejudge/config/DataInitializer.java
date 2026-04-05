@@ -19,6 +19,11 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        if (problemRepository.count() > 0) {
+            log.info("Skipping sample data initialization because problems already exist");
+            return;
+        }
+
         log.info("Initializing sample problems...");
 
         // Problem 1: Two Sum

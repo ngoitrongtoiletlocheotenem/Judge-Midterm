@@ -6,3 +6,30 @@ services:
     dockerfilePath: ./Dockerfile
     autoDeploy: true
     healthCheckPath: /api/problems
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: PGHOST
+        fromDatabase:
+          name: online-judge-db
+          property: host
+      - key: PGPORT
+        fromDatabase:
+          name: online-judge-db
+          property: port
+      - key: PGDATABASE
+        fromDatabase:
+          name: online-judge-db
+          property: database
+      - key: PGUSER
+        fromDatabase:
+          name: online-judge-db
+          property: user
+      - key: PGPASSWORD
+        fromDatabase:
+          name: online-judge-db
+          property: password
+
+databases:
+  - name: online-judge-db
+    plan: free
