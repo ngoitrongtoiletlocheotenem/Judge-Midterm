@@ -10,6 +10,8 @@ import com.onlinejudge.repository.TestCaseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ConnectionCallback;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ public class ProblemService {
 
     private final ProblemRepository problemRepository;
     private final TestCaseRepository testCaseRepository;
+    private final JdbcTemplate jdbcTemplate;
 
     public List<ProblemResponse> getAllProblems() {
         return problemRepository.findAllByOrderByIdAsc()
@@ -53,6 +56,7 @@ public class ProblemService {
         if (request.isClearExisting()) {
             testCaseRepository.deleteAllInBatch();
             problemRepository.deleteAllInBatch();
+            resetIdentityCounters();
         }
 
         int problemCount = 0;
@@ -86,5 +90,22 @@ public class ProblemService {
                 .testCasesImported(testCaseCount)
                 .clearedExisting(request.isClearExisting())
                 .build();
+    }
+
+    private void resetIdentityCounters() {
+        jdbcTemplate.execute((ConnectionCallback<Void>) connection -> {
+            String databaseProduct = connection.getMetaData().getDatabaseProductName().toLowerCase();
+            if (databaseProduct.contains("postgresql")) {
+                try (var statement = connection.createStatement()) {
+                    statement.execute("TRUNCATE TABLE test_cases, problems RESTART IDENTITY CASCADE");
+                }
+            } else if (databaseProduct.contains("h2")) {
+                try (var statement = connection.createStatement()) {
+                    statement.execute("ALTER TABLE test_cases ALTER COLUMN id RESTART WITH 1");
+                    statement.execute("ALTER TABLE problems ALTER COLUMN id RESTART WITH 1");
+                }
+            }
+            return null;
+        });
     }
 }
