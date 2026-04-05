@@ -1,3 +1,5 @@
+Disclaimer: I am not the og author. This project format is from jamilxt. I just add some backend stuff for vercel + render deploy. All credit to Jamilxt. 
+
 # 🚀 CodeJudge - Online Judge System
 
 A simple online judge system where you can solve programming problems and get your code automatically evaluated. Think of it like LeetCode or HackerRank, but running on your own computer!
